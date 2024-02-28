@@ -18,6 +18,7 @@ async function getUser(username) {
 	})
 	.catch((error) => {
 		console.log(`API fetching error: ${error}\n`);
+        alert('Invalid Github user, Try again');
 	});;
 }
 
