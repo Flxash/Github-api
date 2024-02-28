@@ -5,12 +5,20 @@ const form = document.getElementById('form');
 const search = document.getElementById('search');
 
 async function getUser(username) {
-    const resp = await fetch(APIURL + username);
-    const respData = await resp.json();
+    const resp = await fetch(APIURL + username).then(async (resp) => {
+	    if (!resp.ok) {
+	        throw new Error(resp.statusText);
+		}
+		// Here is where you put what you want to do with the response
+        const respData = await resp.json();
 
-    createUserCard(respData);
+        createUserCard(respData);
 
-    getRepos(username);
+        getRepos(username);
+	})
+	.catch((error) => {
+		console.log(`API fetching error: ${error}\n`);
+	});;
 }
 
 async function getRepos(username) {
@@ -23,6 +31,7 @@ async function getRepos(username) {
 function createUserCard(user) {
     const card = document.createElement('div');
     card.classList.add('card');
+    const verifiedBio = user.bio ? user.bio : 'User does not have a bio';
 
     const cardHTML = `
         <div class="card">
@@ -31,7 +40,7 @@ function createUserCard(user) {
             </div>
             <div class="user-info">
                 <h2>${user.name}</h2>
-                <p>${user.bio}</p>
+                <p>${verifiedBio}</p>
 
                 <ul class="info">
                     <li>
